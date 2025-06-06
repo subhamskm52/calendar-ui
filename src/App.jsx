@@ -1,18 +1,98 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useFetch from './hooks/useFetch';
 import HolidayCalendar from './components/HolidayCalendar';
 
 export default function App() {
-  const { data, loading, error } = useFetch('http://localhost:8080/api/holidays?country=AR&year=2025');
-  useEffect(() => { console.log(data) }, [data]);
+  const [country, setCountry] = useState('AR');
+  const [year, setYear] = useState('2025');
+  const [fetchParams, setFetchParams] = useState({
+    country: 'AR',
+    year: '2025'
+  });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  const { data, loading, error, refetch } = useFetch(
+    `http://localhost:8080/api/holidays?country=${fetchParams.country}&year=${fetchParams.year}`
+  );
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFetchParams({ country, year });
+  };
 
   return (
-    <div className="app">
-      <h1>2025 Holidays (AR)</h1>
-      <HolidayCalendar holidays={data} year={2025} />
+    <div className="app" style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Holiday Calendar</h1>
+      
+      <form onSubmit={handleSubmit} style={{ 
+        marginBottom: '30px',
+        display: 'flex',
+        gap: '15px',
+        justifyContent: 'center',
+        flexWrap: 'wrap'
+      }}>
+        <div>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
+            Country Code:
+          </label>
+          <input
+            type="text"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              width: '100px'
+            }}
+            placeholder="e.g. AR"
+            maxLength="2"
+          />
+        </div>
+        
+        <div>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
+            Year:
+          </label>
+          <input
+            type="number"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              width: '100px'
+            }}
+            placeholder="e.g. 2025"
+            min="2000"
+            max="2100"
+          />
+        </div>
+        
+        <div style={{ alignSelf: 'flex-end' }}>
+          <button
+            type="submit"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Show Holidays
+          </button>
+        </div>
+      </form>
+
+      {loading && <div style={{ textAlign: 'center', fontSize: '18px' }}>Loading...</div>}
+      {error && <div style={{ color: 'red', textAlign: 'center' }}>Error: {error.message}</div>}
+      {data && <HolidayCalendar holidays={data} year={parseInt(year)} />}
     </div>
   );
 }
