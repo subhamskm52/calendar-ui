@@ -2,6 +2,15 @@ import { useState, useEffect } from 'react';
 import useFetch from './hooks/useFetch';
 import HolidayCalendar from './components/HolidayCalendar';
 
+  const countryOptions = [
+  { code: "US", name: "United States" },
+  { code: "AR", name: "Argentina" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "CA", name: "Canada" },
+  { code: "AU", name: "Australia" },
+  { code: "DE", name: "Germany" },
+  { code: "FR", name: "France" },
+];
 export default function App() {
   const [country, setCountry] = useState('AR');
   const [year, setYear] = useState('2025');
@@ -29,19 +38,23 @@ export default function App() {
           <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500' }}>
             Country Code:
           </label>
-          <input
-            type="text"
+          <select
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             style={{
               padding: '8px 12px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-              width: '100px'
+              width: '160px'
             }}
-            placeholder="e.g. AR"
-            maxLength="2"
-          />
+          >
+            <option value="">Select</option>
+            {countryOptions.map((countryOption) => (
+              <option key={countryOption.code} value={countryOption.code}>
+                {countryOption.name}
+              </option>
+            ))}
+          </select>
         </div>
         
         <div>
