@@ -5,33 +5,24 @@ import HolidayCalendar from './components/HolidayCalendar';
 export default function App() {
   const [country, setCountry] = useState('AR');
   const [year, setYear] = useState('2025');
-  const [fetchParams, setFetchParams] = useState({
-    country: 'AR',
-    year: '2025'
-  });
 
-  const { data, loading, error, refetch } = useFetch(
-    `http://localhost:8080/api/holidays?country=${fetchParams.country}&year=${fetchParams.year}`
+  const { data, loading, error } = useFetch(
+    `http://localhost:8080/api/holidays?country=${country}&year=${year}`
   );
 
   useEffect(() => {
     console.log(data);
   }, [data]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFetchParams({ country, year });
-  };
-
   return (
-    <div className="app" style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Holiday Calendar</h1>
       
-      <form onSubmit={handleSubmit} style={{ 
-        marginBottom: '30px',
+      <div style={{
         display: 'flex',
         gap: '15px',
         justifyContent: 'center',
+        marginBottom: '30px',
         flexWrap: 'wrap'
       }}>
         <div>
@@ -72,26 +63,9 @@ export default function App() {
             max="2100"
           />
         </div>
-        
-        <div style={{ alignSelf: 'flex-end' }}>
-          <button
-            type="submit"
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Show Holidays
-          </button>
-        </div>
-      </form>
+      </div>
 
       {loading && <div style={{ textAlign: 'center', fontSize: '18px' }}>Loading...</div>}
-      {error && <div style={{ color: 'red', textAlign: 'center' }}>Error: {error.message}</div>}
       {data && <HolidayCalendar holidays={data} year={parseInt(year)} />}
     </div>
   );

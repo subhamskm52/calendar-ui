@@ -128,7 +128,7 @@ const HolidayCalendar = ({ holidays, year }) => {
                         key={dayIndex} 
                         style={{
                           ...styles.td,
-                          ...weekStyle,
+                          ...weekStyle, // using week style
                           ...(day?.isHoliday && { 
                             fontWeight: 'bold',
                             border: '2px solid #2e7d32' 
@@ -138,7 +138,7 @@ const HolidayCalendar = ({ holidays, year }) => {
                         {day && (
                           <>
                             <div style={styles.dayNumber}>{day.day}</div>
-                            {day.isHoliday && (
+                            {day.isHoliday && ( // if holiday adding name
                               <div style={styles.holidayName}>{day.holidayName}</div>
                             )}
                           </>
