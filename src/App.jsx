@@ -2,15 +2,6 @@ import { useState, useEffect } from 'react';
 import useFetch from './hooks/useFetch';
 import HolidayCalendar from './components/HolidayCalendar';
 
-  const countryOptions = [
-  { code: "US", name: "United States" },
-  { code: "AR", name: "Argentina" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "CA", name: "Canada" },
-  { code: "AU", name: "Australia" },
-  { code: "DE", name: "Germany" },
-  { code: "FR", name: "France" },
-];
 export default function App() {
   const [country, setCountry] = useState('AR');
   const [year, setYear] = useState('2025');
@@ -18,10 +9,10 @@ export default function App() {
   const { data, loading, error } = useFetch(
     `http://localhost:8080/api/holidays?country=${country}&year=${year}`
   );
-
+  const {data: countryData} = useFetch("http://localhost:8080/api/holidays/available-countries")
   useEffect(() => {
     console.log(data);
-  }, [data]);
+  }, [data, countryData]);
 
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -49,8 +40,8 @@ export default function App() {
             }}
           >
             <option value="">Select</option>
-            {countryOptions.map((countryOption) => (
-              <option key={countryOption.code} value={countryOption.code}>
+            {countryData?.map((countryOption) => (
+              <option key={countryOption.countryCode} value={countryOption.countryCode}>
                 {countryOption.name}
               </option>
             ))}
