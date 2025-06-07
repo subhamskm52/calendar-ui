@@ -6,7 +6,8 @@ const MONTHS = [
 ];
 const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const HolidayCalendar = ({ holidays, year }) => {
+const HolidayCalendar = ({ holidays, year , onlyHoliday}) => {
+  console.log("only hlidays", onlyHoliday)
   const holidaysMap = useMemo(() => {
     const map = new Map();
     holidays.forEach(holiday => {
@@ -15,8 +16,8 @@ const HolidayCalendar = ({ holidays, year }) => {
     return map;
   }, [holidays]);
 
-  const calendarData = useMemo(() => {
-    return MONTHS.map((monthName, monthIndex) => {
+  const calendarData = 
+    MONTHS.map((monthName, monthIndex) => {
       const firstDay = new Date(year, monthIndex, 1);
       const lastDay = new Date(year, monthIndex + 1, 0);
       const daysInMonth = lastDay.getDate();
@@ -50,7 +51,18 @@ const HolidayCalendar = ({ holidays, year }) => {
             weekHolidayCount: holidayCount
           }));
           
-          month.weeks.push(currentWeek);
+          if(onlyHoliday)
+          {
+            console.log("flag0 : " + holidayCount);
+            if(holidayCount > 0){
+              console.log("flag1");
+              month.weeks.push(currentWeek);
+            }
+          }
+          else {
+              console.log("flag2")
+            month.weeks.push(currentWeek);
+          }
           currentWeek = [];
           holidayCount = 0; // Reset counter for new week
         }
@@ -60,12 +72,18 @@ const HolidayCalendar = ({ holidays, year }) => {
       if (currentWeek.length > 0) {
         currentWeek = [...currentWeek, ...Array(7 - currentWeek.length).fill(null)]
           .map(day => day ? { ...day, weekHolidayCount: holidayCount } : null);
-        month.weeks.push(currentWeek);
+        if(onlyHoliday )
+        {
+          if(currentWeek.holidayCount>0)
+            month.weeks.push(currentWeek);
+        }
+        else{
+          month.weeks.push(currentWeek);
+        }
       }
 
       return month;
     });
-  }, [year, holidaysMap]);
 
   const styles = {
     container: { padding: 16, maxWidth: 1200, margin: '0 auto', fontFamily: 'Arial' },

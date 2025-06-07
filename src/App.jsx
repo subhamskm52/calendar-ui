@@ -5,6 +5,7 @@ import HolidayCalendar from './components/HolidayCalendar';
 export default function App() {
   const [country, setCountry] = useState('AR');
   const [year, setYear] = useState('2025');
+  const [toggle, setToggle] = useState(false)
 
   const { data, loading, error } = useFetch(
     `http://localhost:8080/api/holidays?country=${country}&year=${year}`
@@ -67,10 +68,15 @@ export default function App() {
             max="2100"
           />
         </div>
+         <button 
+            onClick={() => setToggle(!toggle)} 
+            class="btn btn-primary mb-5">
+          Toggle State
+        </button>
       </div>
 
       {loading && <div style={{ textAlign: 'center', fontSize: '18px' }}>Loading...</div>}
-      {data && <HolidayCalendar holidays={data} year={parseInt(year)} />}
+      {data && <HolidayCalendar holidays={data} year={parseInt(year)} onlyHoliday={toggle}/>}
     </div>
   );
 }
